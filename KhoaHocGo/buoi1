@@ -1,0 +1,276 @@
+
+
+package: tên file
+
+import(
+	
+)
+package main
+
+import 'fmt'
+
+// func main
+// hàm in ra fmt. println
+
+viết hoa chữ đầu, exported
+
+func: có thể có tham số, có thể có trả về
+
+swap(x, y string) (string, string): trả về 2 kết quả string{}
+
+
+int8: độ lớn của dữ liệu bình thường 8bit
+int: 32bit 
+int16: 16bit
+int32:32bit
+int 64: 64bit
+
+printf: f format
+
+const không thể để :=
+dấu 1 << 100: tượng trưng chúng ta mang số 1 dịch qua bên trái 100 bit
+
+
+// for trong go
+//defer: từ khóa thực thi ngay trước khi hàm này kết thúc
++ last-in-first-out
++ first-in-last-out
+
+
+// pointers: 
+p:=&i: point to i: khi khai báo một biến, biến có giá trị trên thanh ram của chúng ta, nó có địa chỉ mà i đó lấy ra
+in nó ra => (*p) đi lấy giá trị của nó ra
+package main
+
+import "fmt"
+
+func main() {
+	i, j := 42, 2701
+	k=i//k copy value from i
+	k=10// i không đổi
+
+	p := &i         // point to i
+	fmt.Println(*p) // read i through the pointer
+	*p = 21         // set i through the pointer
+	fmt.Println(i)  // see the new value of i
+
+	p = &j         // point to j
+	*p = *p / 37   // divide j through the pointer
+	fmt.Println(j) // see the new value of j
+}
+
+
+/// nil: khi con trỏ thì giá trị mặc định của nó phải là nil
+
+/// make([]int): đi với silce định nghĩa len nó k quan tâm cap
+// dùng make khi biết rất rõ mảng tăng tiến bao nhiêu nữa
+// không có hàm remove element : nếu muốn remove thì phải nối 2 mảng lại
+
+
+
+// map[] 2 phần 
+// cấp phát map : make(map)
+
+// fn là một hàm
+
+//  all các struct có method đều được gjoi là abser
+
+
+
+
+
+
+
+
+
+
+======================= Buổi 2 ===============================
+
+goroutines: một chuỗi nhẹ được quản lý bởi Go runtime, nhẹ hơn thread rất nhiều và 1 thread có rẩ nhiều goroutine
+
+thread để chạy hàm chạy thread khác không liên quan tới func main
+ trong golang ghi code bình thường chạy từ trên xuống dưới, nếu muốn chạy một goroutine mới thì đặt go phía trước
+
+ // make() hàm mặc định của go
+
+ // channel: go chia sẻ để họ giao tiếp
+
+  hàm thêm go phía trước thì thực thi chạy luôn
+
+ === goroutine =====
+ package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	//goroutine 1
+	fmt.Println("Hello, playground")
+	
+	c :=make(chan int)
+	
+	go func(){
+		// goroutine 2
+		time.Sleep(time.Second * 3) // thời gian chờ chạy
+		c <-1 // gán dữ liệu vào
+	}() // chạy hàm thực thi 
+	
+	data := <- c // đẩy dữ liệu ra
+	fmt.Println(data)
+	
+}
+ 
+ ====== close goroutine =====
+
+ ////========= Buffered channel=========
+ch := make(chan int, 100) // là hàng đợi, first in, first out
+package main
+
+import (
+	"fmt"
+	
+)
+
+func main() {
+	ch :=make(chan int, 1) // thời gian chờ chạy
+	ch <- 1 // nếu đẩy dữ lieuj ra liền thì k block
+	fmt.Println(<-ch)
+	
+	ch <-2
+	fmt.Println(<-ch)
+	
+}
+
+////===== range
+
+thường sau range là một mảng,
+channel thì range sẽ đi lấy từng giá trị trong mảng
+
+
+/////==================== select =======================
+- chọn lớn hơn 2 goroutine chan
+Câu lệnh select cho phép một quy trình goroutine chờ trên nhiều thao tác giao tiếp.
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	fmt.Println("Hello, playground")
+	c1 :=make(chan int)
+	c2 :=make(chan int)
+	
+	go func(){
+		time.Sleep(time.Second)
+		c1 <-5
+	}()
+	
+	go func(){
+	time.Sleep(time.Second*2)
+		c2 <-10	
+	}()
+	
+	select {
+		case x := <-c1:
+		fmt.Println(x)
+		case y := <-c2:
+		fmt.Println(y)
+	}
+	
+}
+
+
+////======================Default Selection
+
+
+The default case in a select is run if no other case is ready.
+
+Use a default case to try a send or receive without blocking:
+
+select {
+case i := <-c:
+    // use i
+default:
+    // receiving from c would block
+}
+
+
+///// ================== Exercise: Web Crawler==========
+bài tập
+
+=================================Goroutine vòng lặp 5 chan, 
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+
+func main() {
+	fmt.Println("Hello, playground")
+	
+	numberOfRequests :=100
+	maxWorkerNumber :=5
+	queueChan :=make(chan int, numberOfRequests)
+	doneChan := make(chan int)
+	
+	for i :=1;i<=maxWorkerNumber ; i++ {
+		queueChan <-i 
+	}
+	
+	
+	
+	for i :=1; i<= 5;i++{ 
+		go func(name string){
+		for v :=range queueChan{
+			crawl(name,v)
+			}
+			fmt.Printf("%s is done\n", name)
+			doneChan <- 1
+		}(fmt.Sprintf("%d",i))
+		
+	}
+
+
+=================== LOCK ========================
+package main
+
+import (
+	"fmt"
+	"time"
+	"sync"
+)
+
+
+func main() {
+	
+	count :=0
+	lock :=new(sync.RWMutex)
+	
+	for i :=1 ; i<=5 ; i++{
+		go func(){
+			for j :=1; j <=20000; j++{
+				lock.Lock() // accquire lock
+				count ++
+				lock.Unlock()
+				//data racing
+				//read count
+				//add 1 to count
+				// write to count
+			}
+			
+		}()
+	}
+	
+	time.Sleep(time.Second * 4)
+	fmt.Println(count)
+
+}
+ =========================================================
+ 
+

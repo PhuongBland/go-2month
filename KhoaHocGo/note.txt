@@ -1,0 +1,95 @@
+- Nắm vững Golang, cách viết API, hệ thống tải cao với Golang.
+- Xây dựng Github Profile với các Golang repository.
+- Hiểu rõ cách tổ chức, kiến trúc một hệ thống backend Golang.
+- Kinh nghiệm giải quyết các nghiệp vụ chính của Food Delivery.
+
+- github profile => các activities. 
+
+
+=> sau hoàn thành khóa học
+- kinh nghiệm tích lũy tương đương ít nhất 1 năm
+- Tái cấu trúc CV
+
+
+
+*** Các nội dung chính cơ bản
+- Ngôn ngữ golang- những cái niệm quan trọng
+- cách phân tích dự án từ giao diện cho trước (Food Delivery)
+- Thiết lập database(MySQL) cho dự án (Food Delivery)
+- Viết API cơ bản trong golang
+- Kiến trúc và các design pattern thường dùng trong golanf
+- Deploy trên server (AWS/Digital Ocean) với Docker
+
+**** các nội dung chính cao cấp
+- Viết api nâng cao
+- cách giao tiếp giữa module hoặc các service trong hệ thống.
+- PubSub với channel Golang, Async Job.
+- Kỹ thuật tối ưu DB, chịu tải hệ thống.
+- SocketIO với Golang: tracking đơn hàng & shipper realtime.
+- Logging và Tracing.
+- Các giải pháp, flow nghiệp vụ trong food Delivery backend
+
+
+
+****** 
+cài đặt golang, docker
+cài đặt editor: vscode hoặc goland
+
+
+cài docker install
+
+
+
+======= Agenda
+- Analyze UI Food Delivery (from 200lab)
+- UI to User Story / Requirement (Tech)
+- User Story to Database (Entity and Relationship) thực thẻ
+- Bonus:
++ Improve DB, high performance  chất lượng cao
++ Multi-column indexes in right way. cái nào đúng hơn cái nào
++ We do not use foreign key any more  không cần dùng khóa ngoại hệ thống lớn
+
+======== User story/feature to Model/Entity
+- focus on "noun" in user story.
+Chúng ta nên gạch chân dưới danh từ, vì hầu hết danh từ đó là tên của entity
+- note: 
++entity name should be in singular form.
++ table name should be in plural form.
++ High priority on important/cỏe features
+
+- Entity peoperties:
++ some of them can be found on list UI.
++ More on details screens
+= note:
++ not all of element on UI are properties. They could be computed fields.
++ Each of them should have ID, status, created_at and updated_at
+
+ex: food entity:
+- id is int(primary key, auto increasement)
+name is varchar(string in Mysql)
+- restaurant_id is int (should be not null)
+price is float
+- image is json (storing object as JSON string)
+- status is int (or enum('active', 'inactive')
+- created_at is timestamp (default is now())
+updated_at is timestamp (default is now, auto change)
+
+
+/// but these are not properties:
+has_liked is tinyint(1) (bool in Mysql)
+- like_count is int
+- rating_point is float
+ note:
+some of them can be computed, not stored.
+sometimes we choose storing them for caching (speed up reading but slow down updating)
+
+Entity Relationship (explanation)
+- one to one cộng 2 bản lại với nhau thành bảng lớn, dữ liệu tương ứng 1 user sẽ có 1 config chính nó 
+- one to many 
+- many to many
+
+
+///// do it yourself
+- viết tất cả user stories in UI food Delivery.
+- design all entities and their relationships
+- hint: use https:// dbdiagram.io for design your DB
