@@ -14,7 +14,7 @@ type DeleteRestaurantStore interface {
 	) (*restaurantmodel.Restaurant, error)
 	UpdateData(ctx context.Context,
 		id int,
-		dât *restaurantmodel.RestaurantUpdate,
+		data *restaurantmodel.RestaurantUpdate,
 	) error
 }
 
